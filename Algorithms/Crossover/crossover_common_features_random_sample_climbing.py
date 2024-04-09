@@ -1,20 +1,21 @@
 import random
 import numpy as np
 
-def f(x):
-  return (x-1.) * (x-1.)
+from Function.function import discus
+from Representation.individual import Individual
+
+
 def decode(binary_num, a, b, n):
-  """
+    """
     Funkcja dekodująca łańcuch binarny na wartość dziesiętną.
-  """
-  binary_num = ''.join(map(str, binary_num))
-  decimal_num = int(binary_num, 2)
-  return a + decimal_num * (b - a) / (2**n - 1)
+    """
+    binary_num = ''.join(map(str, binary_num))
+    decimal_num = int(binary_num, 2)
+    return a + decimal_num * (b - a) / (2 ** n - 1)
 
 
-def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta, a, b, minim = False):
-
-  """
+def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta, a, b, f, minim=False):
+    """
     Powielanie z lokalnym dostrajaniem.
     Common Features/Random Sample Climbing Crossover.
 
@@ -22,42 +23,86 @@ def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta,
     używając powyższego operatora krzyżowania.
 
 
-    :param n: Długość łańcucha binarnego.
     :param alpha: Liczba pętli zewnętrznych, określająca ile instancji V będzie poddawane losowym mutacjom.
     :param beta: Liczba pętli wewnętrznych, określająca ilu losowym mutacjom polegnie każda instancja V.
     :param a: Pierwsza, mniejsza liczba określająca dolną granicę zakresu w którym poszukiwane jest rozwiązanie.
     :param b: Druga, większa liczba określająca górną granicę zakresu w którym poszukiwane jest rozwiązanie.
+    :param f: Funkcja
     :param minim: Wartość typu bool określająca czy funkcja rozwiązuje problem minimalizacji.
                   Domyślnie ma wartość false - rozwiązywany jest problem maksymalizacji.
-  """
-  A, B = random.sample(Pula_rodzicow, 2)
-  n = len(A)
+    """
+    A, B = random.sample(Pula_rodzicow, 2)
+    n = len(A.chromosomes[0])
+    V = Individual(n, len(A.chromosomes))
+    individuals = []
 
-  V = np.zeros(n, dtype = int)
+    for i in range(alpha * beta):
+        individuals.append(Individual(n, len(A.chromosomes), True))
 
-  for i in range(n):
-    if A[i] == B[i] == 1:
-      V[i] = 1
-  best = V.copy()
+    ind_index = 0
 
-  for i in range(alpha):
+    for chromosome_index in range(len(A.chromosomes)):
+        # A, B, V chrom
+        A_chrom = A.chromosomes[chromosome_index]
+        B_chrom = B.chromosomes[chromosome_index]
+        V_chrom = V.chromosomes[chromosome_index]
 
-    temp = V.copy()
+        for i in range(n):
+            if A_chrom[i] == B_chrom[i] == 1:
+                V_chrom[i] = 1
+            else:
+                V_chrom[i] = 0
 
-    for j in range(beta):
+        for i in range(alpha):
 
-      lambd = np.random.randint(1, n + 1)
+            temp = V_chrom.copy()
 
-      positions_to_mutate = np.random.choice(range(0, n), lambd, replace = False)
+            for j in range(beta):
 
-      for position in positions_to_mutate:
-        temp[position] += 1
-        temp[position] %= 2
+                lambd = np.random.randint(1, n + 1)
 
-      if minim:
-        if f(decode(temp, a, b, n)) < f(decode(best, a, b, n)):
-          best = temp.copy()
+                positions_to_mutate = np.random.choice(range(0, n), lambd, replace=False)
 
-      elif f(decode(temp, a, b, n)) > f(decode(best, a, b, n)):
-          best = temp.copy()
-  return best
+                for position in positions_to_mutate:
+                    temp[position] += 1
+                    temp[position] %= 2
+
+                individuals[ind_index].add_chromosome(temp)
+                ind_index += 1
+                if ind_index == alpha * beta:
+                    ind_index = 0
+
+    best = None
+    best_val = None
+
+    for individual in individuals:
+        if best is None:
+            best = individual
+            best_val = f(individual.decode(a, b))
+        else:
+            val = f(individual.decode(a, b))
+
+            if not minim:
+                if val > best_val:
+                    best = individual
+                    best_val = val
+            # MINIMALIZACJA:
+
+            else:
+                if val < best_val:
+                    best = individual
+                    best_val = val
+
+    return best
+
+
+# m_p = [Individual(5, 5), Individual(5, 5)]
+# print(m_p[0].chromosomes)
+# print(m_p[1].chromosomes)
+# kek1 = crossover_common_features_random_sample_climbing(m_p, 500, 500, -10, 10, discus)
+# print(kek1.chromosomes, discus(kek1.decode(-10, 10)))
+# print(discus([-10]))
+# print(discus([10, 10, 10, 10, 10]))
+# print(discus([2, 5, 0, 0, 2]))
+# print(kek1.decode(-10, 10))
+
