@@ -1,5 +1,6 @@
 import random
 
+
 def mutation_two_point(chromosome, mutation_rate):
     if random.random() <= mutation_rate:
         indexes = random.sample(range(len(chromosome)), 2)

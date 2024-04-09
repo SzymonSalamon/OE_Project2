@@ -19,7 +19,7 @@ def crossover_discrete(M_pool):
                 chromosome.append(gene2)
         child_individual.add_chromosome(chromosome)
 
-    return child_individual
+    return [child_individual]
 
 
 # m_p = [Individual(5, 5), Individual(5, 5)]

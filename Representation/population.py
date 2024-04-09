@@ -15,7 +15,7 @@ population_size - wielkosc populacji
 class Population:
     def __init__(self):
         self.population_size = None
-        self.individuals_pool = None
+        self.individuals_pool = []
 
     def generate_individuals_pool(self, chromosome_length, var_number, population_size):
         individuals_pool = []
@@ -43,14 +43,41 @@ class Population:
     def add_individual_to_population(self, individual: Individual):
         self.individuals_pool.append(individual)
 
-    def evaluate_and_sort_individuals(self, function, a, b):
+    def evaluate_and_sort_individuals(self, function, a, b, minim):
         func_values = []
         for i in range(len(self.individuals_pool)):
             func_values.append((function(self.individuals_pool[i].decode(a, b)), i))
 
-        # sorted_func_values = sorted(func_values, key=lambda x: x[0], reverse=True) <- rosnąca
-        sorted_func_values = sorted(func_values, key=lambda x: x[0])
+        if minim:
+            sorted_func_values = sorted(func_values, key=lambda x: x[0])
+        else:
+            sorted_func_values = sorted(func_values, key=lambda x: x[0], reverse=True)
+
         return sorted_func_values
+
+    def get_average(self, function, a, b):
+        func_values_sum = 0
+        for i in range(len(self.individuals_pool)):
+            func_values_sum += function(self.individuals_pool[i].decode(a, b))
+
+        return func_values_sum / len(self.individuals_pool)
+
+    def get_best_individual(self, function, a, b, minim):
+        best_ind = self.individuals_pool[0]
+        best_ind_val = function(self.individuals_pool[0].decode(a, b))
+
+        for i in range(1, len(self.individuals_pool)):
+            val = function(self.individuals_pool[i].decode(a, b))
+            if minim:
+                if val < best_ind_val:
+                    best_ind = self.individuals_pool[i]
+                    best_ind_val = val
+            else:
+                if val > best_ind_val:
+                    best_ind = self.individuals_pool[i]
+                    best_ind_val = val
+
+        return best_ind, best_ind_val
 
     def get_random_individuals(self, num_individuals):
         return random.sample(self.individuals_pool, num_individuals)

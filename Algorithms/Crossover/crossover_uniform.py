@@ -25,7 +25,7 @@ def crossover_uniform(M_pool, probability=0.5):
         child1_individual.add_chromosome(child1)
         child2_individual.add_chromosome(child2)
 
-    return child1_individual, child2_individual
+    return [child1_individual, child2_individual]
 
 
 # m_p = [Individual(5, 5), Individual(5, 5)]

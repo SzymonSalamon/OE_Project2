@@ -29,8 +29,8 @@ def crossover_onepoint(parent1, parent2, crossover_point):
     return child
 
 
-m_p = [Individual(5, 5), Individual(5, 5), Individual(5, 5), Individual(5,5)]
-print(m_p[0].chromosomes)
-print(m_p[1].chromosomes)
-kek1 = crossover_three_parent(m_p)
-print(kek1[0].chromosomes, "\n", kek1[1].chromosomes, "\n", kek1[2].chromosomes)
+# m_p = [Individual(5, 5), Individual(5, 5), Individual(5, 5), Individual(5,5)]
+# print(m_p[0].chromosomes)
+# print(m_p[1].chromosomes)
+# kek1 = crossover_three_parent(m_p)
+# print(kek1[0].chromosomes, "\n", kek1[1].chromosomes, "\n", kek1[2].chromosomes)

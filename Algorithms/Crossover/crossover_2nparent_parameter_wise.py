@@ -41,8 +41,8 @@ def crossover_2nparent_parameter_wise(Pula_rodzicow, l=4, q=3):
     return children
 
 
-m_p = [Individual(9, 2), Individual(9, 2), Individual(9, 2), Individual(9, 2)]
-print(m_p[0].chromosomes)
-print(m_p[1].chromosomes)
-kek1 = crossover_2nparent_parameter_wise(m_p)
-print(kek1[0].chromosomes, "\n", kek1[1].chromosomes)
+# m_p = [Individual(10, 2), Individual(10, 2), Individual(10, 2), Individual(10, 2)]
+# print(m_p[0].chromosomes)
+# print(m_p[1].chromosomes)
+# kek1 = crossover_2nparent_parameter_wise(m_p)
+# print(kek1[0].chromosomes, "\n", kek1[1].chromosomes)
