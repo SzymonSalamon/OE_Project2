@@ -10,7 +10,6 @@ def crossover_microbial(M_pool, f, a, b):
     A, B = random.sample(M_pool, 2)
     val_A = f(A.decode(a, b))
     val_B = f(B.decode(a, b))
-    print(val_A, val_B)
 
     for i_chrom in range(len(A.chromosomes)):
 
@@ -26,7 +25,7 @@ def crossover_microbial(M_pool, f, a, b):
             for i in range(alfa, alfa + dlugosc_segmentu):
                 A.chromosomes[i_chrom][i] = B.chromosomes[i_chrom][i]
 
-    return A, B
+    return [A, B]
 
 
 # m_p = [Individual(5, 5), Individual(5, 5)]

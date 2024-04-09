@@ -6,9 +6,9 @@ Funkcje bedace celem minimalizacji
 def hyperellipsoid(x):
     n = len(x)
     suma = 0
-    for i in range(0, n - 1):
-        for j in range(0, i):
-            suma = suma + (x[j] ** 2)
+    for i in range(n):
+        for j in range(i+1):
+            suma += (x[j] ** 2)
     return suma
 
 

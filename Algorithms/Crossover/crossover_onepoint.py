@@ -24,11 +24,11 @@ def crossover_onepoint(M_pool):
         child1_individual.add_chromosome(child1)
         child2_individual.add_chromosome(child2)
 
-    return child1_individual, child2_individual
+    return [child1_individual, child2_individual]
 
 
-m_p = [Individual(5, 5), Individual(5, 5)]
-print(m_p[0].chromosomes)
-print(m_p[1].chromosomes)
-kek1, kek2 = crossover_onepoint(m_p)
-print(kek1.chromosomes, "\n", kek2.chromosomes)
+# m_p = [Individual(5, 5), Individual(5, 5)]
+# print(m_p[0].chromosomes)
+# print(m_p[1].chromosomes)
+# kek1, kek2 = crossover_onepoint(m_p)
+# print(kek1.chromosomes, "\n", kek2.chromosomes)

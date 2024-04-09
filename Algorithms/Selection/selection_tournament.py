@@ -4,8 +4,8 @@ import random
 from Representation.population import Population
 
 
-def selection_tournament(population: Population, tournament_size: int, function, a, b):
-    population_for_cross = []
+def selection_tournament(population: Population, tournament_size: int, function, a, b, minim):
+    population_for_cross = Population()
     individuals = population.individuals_pool
     tournaments = split_list_into_sublists(individuals, tournament_size)
 
@@ -15,11 +15,16 @@ def selection_tournament(population: Population, tournament_size: int, function,
 
         for individual in tournament[1:]:
             val = function(individual.decode(a, b))
-            if val > best_ind_val:
-                best_ind = individual
-                best_ind_val = val
+            if minim:
+                if val < best_ind_val:
+                    best_ind = individual
+                    best_ind_val = val
+            else:
+                if val > best_ind_val:
+                    best_ind = individual
+                    best_ind_val = val
 
-        population_for_cross.append(best_ind)
+        population_for_cross.add_individual_to_population(best_ind)
 
     return population_for_cross
 
