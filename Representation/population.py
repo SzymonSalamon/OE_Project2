@@ -82,6 +82,4 @@ class Population:
     def get_random_individuals(self, num_individuals):
         return random.sample(self.individuals_pool, num_individuals)
 
-# population = Population(16, 2, 5)
-# for chromosome in population.chromosome_pool:
-#     print(chromosome.chromosomes)
+

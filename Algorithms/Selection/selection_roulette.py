@@ -5,6 +5,7 @@ from Representation.population import Population
 
 
 def selection_roulette(population: Population, num_of_individuals_to_select: int, function, a, b, minim):
+
     sum_of_function_values = 0
     if minim:
         for individual in population.individuals_pool:
@@ -12,11 +13,15 @@ def selection_roulette(population: Population, num_of_individuals_to_select: int
     else:
         for individual in population.individuals_pool:
             sum_of_function_values += function(individual.decode(a, b))
-    list_of_probabilities = []
-    for individual in population.individuals_pool:
-        list_of_probabilities.append(function(individual.decode(a, b)) / sum_of_function_values)
 
-    #print(list_of_probabilities)
+    list_of_probabilities = []
+    if minim:
+        for individual in population.individuals_pool:
+            list_of_probabilities.append((1 / function(individual.decode(a, b))) / sum_of_function_values)
+    else:
+        for individual in population.individuals_pool:
+            list_of_probabilities.append(function(individual.decode(a, b)) / sum_of_function_values)
+
     selected_individuals = []
     while len(selected_individuals) < num_of_individuals_to_select:
         random_float = np.random.rand()

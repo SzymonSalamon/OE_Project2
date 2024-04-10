@@ -1,3 +1,4 @@
+import copy
 import random
 import numpy as np
 
@@ -35,7 +36,6 @@ def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta,
     n = len(A.chromosomes[0])
     V = Individual(n, len(A.chromosomes))
     individuals = []
-
     for i in range(alpha * beta):
         individuals.append(Individual(n, len(A.chromosomes), True))
 
@@ -55,10 +55,9 @@ def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta,
 
         for i in range(alpha):
 
-            temp = V_chrom.copy()
+            temp = copy.deepcopy(V_chrom)
 
             for j in range(beta):
-
                 lambd = np.random.randint(1, n + 1)
 
                 positions_to_mutate = np.random.choice(range(0, n), lambd, replace=False)
@@ -86,7 +85,6 @@ def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta,
                 if val > best_val:
                     best = individual
                     best_val = val
-            # MINIMALIZACJA:
 
             else:
                 if val < best_val:
@@ -95,14 +93,12 @@ def crossover_common_features_random_sample_climbing(Pula_rodzicow, alpha, beta,
 
     return best
 
-
 # m_p = [Individual(5, 5), Individual(5, 5)]
 # print(m_p[0].chromosomes)
 # print(m_p[1].chromosomes)
-# kek1 = crossover_common_features_random_sample_climbing(m_p, 500, 500, -10, 10, discus)
+# kek1 = crossover_common_features_random_sample_climbing(m_p, 5, 5, -10, 10, discus, True)
 # print(kek1.chromosomes, discus(kek1.decode(-10, 10)))
 # print(discus([-10]))
 # print(discus([10, 10, 10, 10, 10]))
 # print(discus([2, 5, 0, 0, 2]))
-# print(kek1.decode(-10, 10))
-
+# print(discus(kek1.decode(-10, 10)))
