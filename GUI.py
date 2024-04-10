@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk, messagebox
 import time
@@ -120,7 +121,12 @@ class GeneticAlgorithmGUI:
         start_button = ttk.Button(root, text="Start", command=self.start_process)
         start_button.pack(pady=10)
 
-    def start_process(self)
+    def start_process(self):
+        for filename in os.listdir("Data/test/"):
+            file_path = os.path.join("Data/test/", filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
         parameters = {}
         for param_name, entry_widget in self.entries.items():
             parameters[param_name] = entry_widget.get()
@@ -153,10 +159,10 @@ class GeneticAlgorithmGUI:
             "uniform": crossover_uniform,
             "common_features_random_sample_climbing": crossover_common_features_random_sample_climbing,
             "three_parent": crossover_three_parent,
-            "crossover_2nparent_parameter_wise": crossover_2nparent_parameter_wise,
+            "2nparent_parameter_wise": crossover_2nparent_parameter_wise,
         }
+        crossover_function = crossover_methods.get(crossover_method_name, crossover_twopoint)
 
-        crossover_function = crossover_methods.get(crossover_method_name)
         if mutation_method_name == "edge":
             mutation_function = mutation_edge
         elif mutation_method_name == "single_point":
@@ -178,6 +184,8 @@ class GeneticAlgorithmGUI:
         parameters["cross_prob"] = float(parameters["cross_prob"])
         parameters["mutation_prob"] = float(parameters["mutation_prob"])
         parameters["inversion_prob"] = float(parameters["inversion_prob"])
+        parameters["alpha"] = int(parameters["alpha"])
+        parameters["beta"] = int(parameters["beta"])
         parameters["a"] = float(parameters["a"])
         parameters["b"] = float(parameters["b"])
 
@@ -198,15 +206,15 @@ class GeneticAlgorithmGUI:
         elapsed_time = end_time - start_time  # Obliczenie czasu wykonania
 
         # Wczytanie danych z plików tekstowych
-        with open('Data/plik_odchylenie_standardowe_disc4.txt', 'r') as file:
+        with open('Data/test/plik_odchylenie_standardowe_disc4.txt', 'r') as file:
             std_dev_lines = file.readlines()
             std_dev_values = [float(line.strip()) for line in std_dev_lines]
 
-        with open('Data/plik_najlepsza_wartosc_disc4.txt', 'r') as file:
+        with open('Data/test/plik_najlepsza_wartosc_disc4.txt', 'r') as file:
             best_value_lines = file.readlines()
             best_values = [float(line.strip()) for line in best_value_lines]
 
-        with open('Data/plik_epoki_i_srednia_disc4.txt', 'r') as file:
+        with open('Data/test/plik_epoki_i_srednia_disc4.txt', 'r') as file:
             mean_lines = file.readlines()
             mean_values = [float(line.strip()) for line in mean_lines]
 
@@ -242,7 +250,7 @@ class GeneticAlgorithmGUI:
 
         # Zapisywanie wykresów jako pliki JPEG
         plt.tight_layout()  # Zapewnia, że etykiety nie będą się nakładać na siebie
-        plt.savefig('Data/wykresy_big.jpg', dpi=300)  # Zapisuje wykresy jako plik JPEG
+        plt.savefig('Data/test/wykres_test.jpg', dpi=300)  # Zapisuje wykresy jako plik JPEG
         plt.show()
         # Wyświetlenie okna dialogowego z informacją o czasie wykonania
         messagebox.showinfo("Czas wykonania funkcji", f"Funkcja wykonana w czasie: {elapsed_time:.2f} sekundy")

@@ -3,14 +3,14 @@ import copy
 import numpy as np
 
 from Algorithms.Crossover import crossover_common_features_random_sample_climbing
-from Algorithms.Crossover.crossover_2nparent_parameter_wise import crossover_2nparent_parameter_wise
-from Algorithms.Crossover.crossover_discrete import crossover_discrete
-from Algorithms.Crossover.crossover_microbial import crossover_microbial
-from Algorithms.Crossover.crossover_onepoint import crossover_onepoint
-from Algorithms.Crossover.crossover_three_parent import crossover_three_parent
-from Algorithms.Crossover.crossover_threepoint import crossover_threepoint
-from Algorithms.Crossover.crossover_twopoint import crossover_twopoint
-from Algorithms.Crossover.crossover_uniform import crossover_uniform
+from Algorithms.Crossover import crossover_2nparent_parameter_wise
+from Algorithms.Crossover import crossover_discrete
+from Algorithms.Crossover import crossover_microbial
+from Algorithms.Crossover import crossover_onepoint
+from Algorithms.Crossover import crossover_three_parent
+from Algorithms.Crossover import crossover_threepoint
+from Algorithms.Crossover import crossover_twopoint
+from Algorithms.Crossover import crossover_uniform
 from Algorithms.Inversion.inversion import inversion
 from Representation.population import Population
 
@@ -67,7 +67,7 @@ class Epoch:
                                  crossover_common_features_random_sample_climbing]
 
             random_float = np.random.rand()
-            if random_float < self.cross_prob:
+            if random_float > self.cross_prob:
                 if self.cross_method in crosses_2_parents:
                     for individual in self.population_to_cross.get_random_individuals(2):
                         if len(self.new_population.individuals_pool) < (self.population_size - self.elite_individuals):
@@ -130,8 +130,6 @@ class Epoch:
         self.inversion()
         self.add_elites()
 
-        # for ind in self.population.individuals_pool:
-        #     print(self.function(ind.decode(self.a, self.b)))
         best_ind, best_ind_val = self.new_population.get_best_individual(self.function, self.a, self.b, self.minim)
         # print("Best:", best_ind_val)
         avg = self.new_population.get_average(self.function, self.a, self.b)
@@ -140,16 +138,17 @@ class Epoch:
         #     print(self.function(ind.decode(self.a, self.b)))
         values_of_individuals = self.new_population.evaluate_and_sort_individuals(
             self.function, self.a, self.b, self.minim)
+        values_of_individuals = [t[0] for t in values_of_individuals]
         std_deviation = np.std(values_of_individuals)
         # print("STD:", std_deviation)
 
-        with open('Data/plik_epoki_i_srednia_disc4.txt', 'a') as file:
+        with open('Data/test/plik_epoki_i_srednia_disc4.txt', 'a') as file:
             file.write(str(avg) + '\n')
 
-        with open('Data/plik_odchylenie_standardowe_disc4.txt', 'a') as file:
+        with open('Data/test/plik_odchylenie_standardowe_disc4.txt', 'a') as file:
             file.write(str(std_deviation) + '\n')
 
-        with open('Data/plik_najlepsza_wartosc_disc4.txt', 'a') as file:
+        with open('Data/test/plik_najlepsza_wartosc_disc4.txt', 'a') as file:
             file.write(str(best_ind_val) + '\n')
 
         return self.new_population
