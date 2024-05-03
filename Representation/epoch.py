@@ -47,11 +47,11 @@ class Epoch:
         self.elites = []
 
     def generate_individuals_in_population(self):
-        self.population.generate_individuals_pool(self.chromosome_length, self.var_number, self.population_size)
+        self.population.generate_individuals_pool(self.chromosome_length, self.a, self.b, self.var_number, self.population_size)
 
     def select_elite_individuals_for_new_population(self):
         self.elites = []
-        sorted_individuals = self.population.evaluate_and_sort_individuals(self.function, self.a, self.b, self.minim)
+        sorted_individuals = self.population.evaluate_and_sort_individuals(self.function, self.minim)
         for i in range(self.elite_individuals):
             elite_individual = self.population.individuals_pool[sorted_individuals[i][1]]
             self.elites.append(copy.deepcopy(elite_individual))
@@ -130,14 +130,14 @@ class Epoch:
         self.inversion()
         self.add_elites()
 
-        best_ind, best_ind_val = self.new_population.get_best_individual(self.function, self.a, self.b, self.minim)
+        best_ind, best_ind_val = self.new_population.get_best_individual(self.function, self.minim)
         # print("Best:", best_ind_val)
-        avg = self.new_population.get_average(self.function, self.a, self.b)
+        avg = self.new_population.get_average(self.function)
         # print("Average:", avg)
         # for ind in self.new_population.individuals_pool:
         #     print(self.function(ind.decode(self.a, self.b)))
         values_of_individuals = self.new_population.evaluate_and_sort_individuals(
-            self.function, self.a, self.b, self.minim)
+            self.function, self.minim)
         values_of_individuals = [t[0] for t in values_of_individuals]
         std_deviation = np.std(values_of_individuals)
         # print("STD:", std_deviation)

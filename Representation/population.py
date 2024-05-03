@@ -17,10 +17,10 @@ class Population:
         self.population_size = None
         self.individuals_pool = []
 
-    def generate_individuals_pool(self, chromosome_length, var_number, population_size):
+    def generate_individuals_pool(self, chromosome_length, a, b, var_number, population_size):
         individuals_pool = []
         for _ in range(population_size):
-            individual = Individual(chromosome_length, var_number)
+            individual = Individual(chromosome_length, var_number, a, b)
             individuals_pool.append(individual)
         self.individuals_pool = individuals_pool
 
@@ -43,10 +43,10 @@ class Population:
     def add_individual_to_population(self, individual: Individual):
         self.individuals_pool.append(individual)
 
-    def evaluate_and_sort_individuals(self, function, a, b, minim):
+    def evaluate_and_sort_individuals(self, function, minim):
         func_values = []
         for i in range(len(self.individuals_pool)):
-            func_values.append((function(self.individuals_pool[i].decode(a, b)), i))
+            func_values.append((function(self.individuals_pool[i]), i))
 
         if minim:
             sorted_func_values = sorted(func_values, key=lambda x: x[0])
@@ -55,19 +55,19 @@ class Population:
 
         return sorted_func_values
 
-    def get_average(self, function, a, b):
+    def get_average(self, function):
         func_values_sum = 0
         for i in range(len(self.individuals_pool)):
-            func_values_sum += function(self.individuals_pool[i].decode(a, b))
+            func_values_sum += function(self.individuals_pool[i])
 
         return func_values_sum / len(self.individuals_pool)
 
-    def get_best_individual(self, function, a, b, minim):
+    def get_best_individual(self, function, minim):
         best_ind = self.individuals_pool[0]
-        best_ind_val = function(self.individuals_pool[0].decode(a, b))
+        best_ind_val = function(self.individuals_pool[0])
 
         for i in range(1, len(self.individuals_pool)):
-            val = function(self.individuals_pool[i].decode(a, b))
+            val = function(self.individuals_pool[i])
             if minim:
                 if val < best_ind_val:
                     best_ind = self.individuals_pool[i]
