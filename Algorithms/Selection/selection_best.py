@@ -1,8 +1,8 @@
 from Representation.population import Population
 
 
-def selection_best(population: Population, num_of_best_individuals: int, function, a, b, minim):
-    population.sorted_individuals = population.evaluate_and_sort_individuals(function, a, b, minim)
+def selection_best(population: Population, num_of_best_individuals: int, function, minim):
+    population.sorted_individuals = population.evaluate_and_sort_individuals(function, minim)
     population_for_cross = Population()
     for i in range(num_of_best_individuals):
         index_of_i_best_individual = population.sorted_individuals[i][1]
