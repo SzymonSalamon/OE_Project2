@@ -17,10 +17,10 @@ class Population:
         self.population_size = None
         self.individuals_pool = []
 
-    def generate_individuals_pool(self, chromosome_length, a, b, var_number, population_size):
+    def generate_individuals_pool(self, a, b, var_number, population_size):
         individuals_pool = []
         for _ in range(population_size):
-            individual = Individual(chromosome_length, var_number, a, b)
+            individual = Individual(var_number, a, b)
             individuals_pool.append(individual)
         self.individuals_pool = individuals_pool
 
@@ -45,8 +45,9 @@ class Population:
 
     def evaluate_and_sort_individuals(self, function, minim):
         func_values = []
+
         for i in range(len(self.individuals_pool)):
-            func_values.append((function(self.individuals_pool[i]), i))
+            func_values.append((function(self.individuals_pool[i].chromosomes), i))
 
         if minim:
             sorted_func_values = sorted(func_values, key=lambda x: x[0])
@@ -58,16 +59,16 @@ class Population:
     def get_average(self, function):
         func_values_sum = 0
         for i in range(len(self.individuals_pool)):
-            func_values_sum += function(self.individuals_pool[i])
+            func_values_sum += function(self.individuals_pool[i].chromosomes)
 
         return func_values_sum / len(self.individuals_pool)
 
     def get_best_individual(self, function, minim):
         best_ind = self.individuals_pool[0]
-        best_ind_val = function(self.individuals_pool[0])
+        best_ind_val = function(self.individuals_pool[0].chromosomes)
 
         for i in range(1, len(self.individuals_pool)):
-            val = function(self.individuals_pool[i])
+            val = function(self.individuals_pool[i].chromosomes)
             if minim:
                 if val < best_ind_val:
                     best_ind = self.individuals_pool[i]

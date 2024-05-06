@@ -9,18 +9,18 @@ def selection_roulette(population: Population, num_of_individuals_to_select: int
     sum_of_function_values = 0
     if minim:
         for individual in population.individuals_pool:
-            sum_of_function_values += 1./function(individual)
+            sum_of_function_values += 1./function(individual.chromosomes)
     else:
         for individual in population.individuals_pool:
-            sum_of_function_values += function(individual)
+            sum_of_function_values += function(individual.chromosomes)
 
     list_of_probabilities = []
     if minim:
         for individual in population.individuals_pool:
-            list_of_probabilities.append((1 / function(individual)) / sum_of_function_values)
+            list_of_probabilities.append((1 / function(individual.chromosomes)) / sum_of_function_values)
     else:
         for individual in population.individuals_pool:
-            list_of_probabilities.append(function(individual) / sum_of_function_values)
+            list_of_probabilities.append(function(individual.chromosomes) / sum_of_function_values)
 
     selected_individuals = []
     while len(selected_individuals) < num_of_individuals_to_select:

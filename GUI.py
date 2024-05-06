@@ -1,9 +1,13 @@
 import os
+import shutil
 import tkinter as tk
 from tkinter import ttk, messagebox
 import time
 import matplotlib.pyplot as plt
 
+from Algorithms.Crossover import crossover_arithmetic, crossover_average, crossover_blend_alpha, \
+    crossover_blend_alpha_beta, crossover_gene_pooling_2, crossover_linear, crossover_multiparent, \
+    crossover_interchange, crossover_variant_A
 from Algorithms.Crossover.crossover_2nparent_parameter_wise import crossover_2nparent_parameter_wise
 from Algorithms.Crossover.crossover_common_features_random_sample_climbing import \
     crossover_common_features_random_sample_climbing
@@ -15,8 +19,10 @@ from Algorithms.Crossover.crossover_threepoint import crossover_threepoint
 from Algorithms.Crossover.crossover_twopoint import crossover_twopoint
 from Algorithms.Crossover.crossover_uniform import crossover_uniform
 from Algorithms.Mutation.mutation_edge import mutation_edge
+from Algorithms.Mutation.mutation_gauss import mutation_gauss
 from Algorithms.Mutation.mutation_single_point import mutation_single_point
 from Algorithms.Mutation.mutation_two_point import mutation_two_point
+from Algorithms.Mutation.mutation_uniform import mutation_uniform
 from Algorithms.Selection.selection_best import selection_best
 from Algorithms.Selection.selection_roulette import selection_roulette
 from Algorithms.Selection.selection_tournament import selection_tournament
@@ -42,9 +48,9 @@ class GeneticAlgorithmGUI:
             "Probability of inversion": "0.1",
             "Begin of the range": "-65.536",
             "End of the range": "65.536",
-            "Number of epochs": "10",
-            "(CFRSC crossover) alpha": "5",
-            "(CFRSC crossover) beta": "5"
+            "Number of epochs": "200",
+            "(CFRSC crossover) alpha": "0.1",
+            "(CFRSC crossover) beta": "0.2"
         }
         
         style = ttk.Style()
@@ -58,7 +64,6 @@ class GeneticAlgorithmGUI:
 
         # Label and Entry widgets for each parameter
         parameters = [
-            ("Length of the chromosomes", "chromosome_length"),
             ("Number of variables for function", "var_number"),
             ("Size of population", "population_size"),
             ("Amount of individuals for elite selection", "elite_individuals"),
@@ -91,15 +96,15 @@ class GeneticAlgorithmGUI:
         selection_dropdown = ttk.OptionMenu(parameters_frame, self.selection_var, *self.selection_methods)
         selection_dropdown.grid(row=len(parameters), column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-        self.crossover_methods = ["Crossover", "2nparent_parameter_wise", "common_features_random_sample_climbing",
-                                  "discrete",
-                                  "microbial", "onepoint", "three_parent", "threepoint", "twopoint", "uniform"]
+        self.crossover_methods = ["Crossover", "arithmetic", "average",
+                                  "blend_alpha", "blend_alpha_beta", "gene_pooling_2", "linear", "multiparent",
+                                  "interchange", "variant_A"]
         self.crossover_var = tk.StringVar(root)
         self.crossover_var.set(self.crossover_methods[0])
         crossover_dropdown = ttk.OptionMenu(parameters_frame, self.crossover_var, *self.crossover_methods)
         crossover_dropdown.grid(row=len(parameters) + 1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-        self.mutation_methods = ["Mutation", "edge", "single_point", "two_point"]
+        self.mutation_methods = ["Mutation", "gauss", "uniform"]
         self.mutation_var = tk.StringVar(root)
         self.mutation_var.set(self.mutation_methods[0])
         mutation_dropdown = ttk.OptionMenu(parameters_frame, self.mutation_var, *self.mutation_methods)
@@ -122,8 +127,8 @@ class GeneticAlgorithmGUI:
         start_button.pack(pady=10)
 
     def start_process(self):
-        for filename in os.listdir("Data/test/"):
-            file_path = os.path.join("Data/test/", filename)
+        for filename in os.listdir("Data/testrzecz/"):
+            file_path = os.path.join("Data/testrzecz/", filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
@@ -151,6 +156,15 @@ class GeneticAlgorithmGUI:
             selection_function = selection_tournament
 
         crossover_methods = {
+            "arithmetic": crossover_arithmetic,
+            "average": crossover_average,
+            "blend_alpha": crossover_blend_alpha,
+            "blend_alpha_beta": crossover_blend_alpha_beta,
+            "gene_pooling_2": crossover_gene_pooling_2,
+            "linear": crossover_linear,
+            "multiparent": crossover_multiparent,
+            "interchange": crossover_interchange,
+            "variant_A": crossover_variant_A,
             "onepoint": crossover_onepoint,
             "twopoint": crossover_twopoint,
             "threepoint": crossover_threepoint,
@@ -163,19 +177,16 @@ class GeneticAlgorithmGUI:
         }
         crossover_function = crossover_methods.get(crossover_method_name, crossover_twopoint)
 
-        if mutation_method_name == "edge":
-            mutation_function = mutation_edge
-        elif mutation_method_name == "single_point":
-            mutation_function = mutation_single_point
+        if mutation_method_name == "gauss":
+            mutation_function = mutation_gauss
         else:
-            mutation_function = mutation_two_point
+            mutation_function = mutation_uniform
 
         parameters["optimization_type"] = self.optimization_var.get()
         if parameters["optimization_type"] == "min":
             parameters["optimization_type"] = True
         else:
             parameters["optimization_type"] = False
-        parameters["chromosome_length"] = int(parameters["chromosome_length"])
         parameters["var_number"] = int(parameters["var_number"])
         parameters["population_size"] = int(parameters["population_size"])
         parameters["elite_individuals"] = int(parameters["elite_individuals"])
@@ -184,12 +195,12 @@ class GeneticAlgorithmGUI:
         parameters["cross_prob"] = float(parameters["cross_prob"])
         parameters["mutation_prob"] = float(parameters["mutation_prob"])
         parameters["inversion_prob"] = float(parameters["inversion_prob"])
-        parameters["alpha"] = int(parameters["alpha"])
-        parameters["beta"] = int(parameters["beta"])
+        parameters["alpha"] = float(parameters["alpha"])
+        parameters["beta"] = float(parameters["beta"])
         parameters["a"] = float(parameters["a"])
         parameters["b"] = float(parameters["b"])
 
-        first_epoch = Epoch(Population(), parameters["chromosome_length"], parameters["var_number"],
+        first_epoch = Epoch(Population(), parameters["var_number"],
                             parameters["population_size"], parameters["elite_individuals"],
                             selection_function, parameters["selection_config"], parameters["cross_prob"],
                             crossover_function, parameters["mutation_prob"], mutation_function,
@@ -206,15 +217,15 @@ class GeneticAlgorithmGUI:
         elapsed_time = end_time - start_time  # Obliczenie czasu wykonania
 
         # Wczytanie danych z plików tekstowych
-        with open('Data/test/plik_odchylenie_standardowe_disc4.txt', 'r') as file:
+        with open('Data/testrzecz/odchylenie_standardowe.txt', 'r') as file:
             std_dev_lines = file.readlines()
             std_dev_values = [float(line.strip()) for line in std_dev_lines]
 
-        with open('Data/test/plik_najlepsza_wartosc_disc4.txt', 'r') as file:
+        with open('Data/testrzecz/najlepsza_wartosc.txt', 'r') as file:
             best_value_lines = file.readlines()
             best_values = [float(line.strip()) for line in best_value_lines]
 
-        with open('Data/test/plik_epoki_i_srednia_disc4.txt', 'r') as file:
+        with open('Data/testrzecz/epoki_i_srednia.txt', 'r') as file:
             mean_lines = file.readlines()
             mean_values = [float(line.strip()) for line in mean_lines]
 

@@ -11,10 +11,10 @@ def selection_tournament(population: Population, tournament_size: int, function,
 
     for tournament in tournaments:
         best_ind = tournament[0]
-        best_ind_val = function(best_ind)
+        best_ind_val = function(best_ind.chromosomes)
 
         for individual in tournament[1:]:
-            val = function(individual)
+            val = function(individual.chromosomes)
             if minim:
                 if val < best_ind_val:
                     best_ind = individual
