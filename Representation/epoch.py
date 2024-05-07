@@ -134,10 +134,12 @@ class Epoch:
         avg = self.new_population.get_average(self.function)
         # print("Average:", avg)
         # for ind in self.new_population.individuals_pool:
-        #     print(self.function(ind.decode(self.a, self.b)))
+        #     print(ind.chromosomes)
+        #     print(self.function(ind.chromosomes))
         values_of_individuals = self.new_population.evaluate_and_sort_individuals(
             self.function, self.minim)
         values_of_individuals = [t[0] for t in values_of_individuals]
+
         std_deviation = np.std(values_of_individuals)
         # print("STD:", std_deviation)
 
@@ -149,5 +151,8 @@ class Epoch:
 
         with open('Data/testrzecz/najlepsza_wartosc.txt', 'a') as file:
             file.write(str(best_ind_val) + '\n')
+
+        with open('Data/testrzecz/najlepszy_osobnik.txt', 'a') as file:
+            file.write(str(best_ind.chromosomes) + '\n')
 
         return self.new_population
