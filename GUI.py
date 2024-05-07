@@ -38,8 +38,7 @@ class GeneticAlgorithmGUI:
 
         # Domyślne wartości dla parametrów
         default_values = {
-            "Length of the chromosomes": "10",
-            "Number of variables for function": "2",
+            "Number of variables for function": "5",
             "Size of population": "10",
             "Amount of individuals for elite selection": "2",
             "Size of tournament / number of individuals for selections": "4",
@@ -48,7 +47,7 @@ class GeneticAlgorithmGUI:
             "Probability of inversion": "0.1",
             "Begin of the range": "-65.536",
             "End of the range": "65.536",
-            "Number of epochs": "200",
+            "Number of epochs": "300",
             "(CFRSC crossover) alpha": "0.1",
             "(CFRSC crossover) beta": "0.2"
         }
